@@ -88,6 +88,22 @@ return array(
         'Twig_Extension_Debug',
         'TwigBridge\Extensions\AliasLoader',
         'TwigBridge\Extensions\HelperLoader',
+        'TwigBridge\Extensions\FacadeLoader',
+    ),
+
+    /*
+   |--------------------------------------------------------------------------
+   | Facades
+   |--------------------------------------------------------------------------
+   |
+   | Facades to be added as global parameters. (ie. Config.get('param')
+   |
+   */
+    'facades' => array(
+        'Auth',
+        'Config',
+        'Form',
+        'HTML',
     ),
 
     /*
