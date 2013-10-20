@@ -46,7 +46,7 @@ abstract class Template extends Twig_Template
      */
     public function shouldFireEvents($name){
         // Only when the first view is loaded, the template name is the full path.
-        return file_exists($name);
+        return $name[0] != '/' or !file_exists($name);;
     }
 
     /**
