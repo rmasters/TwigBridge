@@ -185,7 +185,11 @@ class TwigBridge
      */
     public function getTwig()
     {
-        $loader = new Twig\Loader\Filesystem($this->app['view']->getFinder(), $this->extension);
+        $loader = new \Twig_Loader_Chain(array(
+            new Twig\Loader\PathLoader(),
+            new Twig\Loader\ViewfinderLoader($this->app['view']->getFinder(), $this->extension),
+            new Twig\Loader\Filesystem($this->app['view']->getFinder(), $this->extension),
+        ));
         $twig   = new Twig_Environment($loader, $this->options);
 
         // Load extensions

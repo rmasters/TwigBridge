@@ -82,28 +82,25 @@ class TwigEngine implements EngineInterface
     }
 
     /**
-     * Load a Twig template (Does not render).
+     * Loads the given template.
      *
-     * @param  string  $path Full file path to Twig template.
-     * @param  string  $view Original view passed View::make.
-     * @return object  \Twig_TemplateInterface
+     * @param mixed $name A template name or an instance of Twig_Template
+     *
+     * @return \Twig_TemplateInterface A \Twig_TemplateInterface instance
+     *
+     * @throws \InvalidArgumentException if the template does not exist
      */
-    public function load($path, $view)
+    protected function load($name)
     {
-        // We need to move the directory requested as the first search path
-        // this stops conflicts. For example, with packages
-        $view_tmp = explode('/', str_replace('.', '/', $view));
-        $path_tmp = explode('/', pathinfo($path, PATHINFO_DIRNAME));
-        $path_tmp_slice = array_slice($path_tmp, 0, -(count($view_tmp)-1));
-        $path_tmp_slice = implode('/', $path_tmp_slice);
+        if ($name instanceof \Twig_Template) {
+            return $name;
+        }
 
-        $paths[] = (strlen($path_tmp_slice) > 0) ? $path_tmp_slice : implode('/', $path_tmp);
-        $paths   = array_merge($paths, $this->twig->getLoader()->getPaths());
-
-        // Set new ordered paths
-        $this->twig->getLoader()->setPaths($paths);
-
-        return $this->twig->loadTemplate($view);
+        try {
+            return $this->twig->loadTemplate($name);
+        } catch (\Twig_Error_Loader $e) {
+            throw new \InvalidArgumentException("Error in $name: ". $e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -117,6 +114,6 @@ class TwigEngine implements EngineInterface
     public function get($path, array $data = array(), $view = null)
     {
         // Render template
-        return $this->load($path, $view)->render($this->getData($data));
+        return $this->load($path)->render($this->getData($data));
     }
 }
