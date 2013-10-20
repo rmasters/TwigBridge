@@ -19,7 +19,36 @@ use Illuminate\View\View;
  */
 abstract class Template extends Twig_Template
 {
-   
+    /**
+     * {@inheritdoc}
+     */
+    public function display(array $context, array $blocks = array())
+    {
+        $name = $this->getTemplateName();
+
+        // Deal with view composers
+        if ($this->shouldFireEvents($name)) {
+            /** @var \Illuminate\View\Environment $env */
+            $env  = $context['__env'];
+            \View::callCreator($view = new View($env, $env->getEngineResolver()->resolve('twig'), $name, null, $context));
+            \View::callComposer($view);
+            $context = $view->getData();
+        }
+
+        parent::display($context, $blocks);
+    }
+
+    /**
+     * Determine of the template should fire creator/composer events.
+     *
+     * @param $name
+     * @return bool
+     */
+    public function shouldFireEvents($name){
+        // Only when the first view is loaded, the template name is the full path.
+        return file_exists($name);
+    }
+
     /**
      * Returns the attribute value for a given array/object.
      *
