@@ -28,7 +28,7 @@ class ViewfinderLoader extends PathLoader
             if(substr($view, -$len) == $ext){
                 $view = substr($view, 0, -$len);
             }
-            return $this->cache[$name] = $this->finder->find($view);
+            return $this->cache[$name] = realpath($this->finder->find($view));
         }
     }
 

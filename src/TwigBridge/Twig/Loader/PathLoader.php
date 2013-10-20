@@ -9,7 +9,7 @@ class PathLoader implements Twig_LoaderInterface, Twig_ExistsLoaderInterface
 
 
     protected function findTemplate($name){
-        return $name;
+        return realpath($name);
     }
     /**
      * {@inheritdoc}
