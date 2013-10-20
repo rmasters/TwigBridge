@@ -2,21 +2,18 @@
 namespace TwigBridge\Twig\Loader;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\View\FileViewFinder ;
-use Twig_LoaderInterface;
-use Twig_ExistsLoaderInterface;
+use Illuminate\View\ViewFinderInterface;
 
-class ViewfinderLoader implements Twig_LoaderInterface, Twig_ExistsLoaderInterface
+
+class ViewfinderLoader extends PathLoader
 {
 
     protected $finder;
-    protected $files;
     protected $extension;
     protected $cache = array();
 
-    public function __construct(FileViewFinder $finder, $extension = 'twig'){
+    public function __construct(ViewFinderInterface $finder, $extension = 'twig'){
         $this->finder = $finder;
-        $this->files = $finder->getFilesystem();
         $this->extension = $extension;
     }
 
@@ -34,35 +31,5 @@ class ViewfinderLoader implements Twig_LoaderInterface, Twig_ExistsLoaderInterfa
             return $this->cache[$name] = $this->finder->find($view);
         }
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function getSource($name)
-    {
-        return $this->files->get( $this->findTemplate($name) );
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function exists($name)
-    {
-        return $this->files->exists( $this->findTemplate($name) );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCacheKey($name)
-    {
-        return $this->findTemplate($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isFresh($name, $time)
-    {
-        return $this->files->lastModified( $this->findTemplate($name) ) <= $time;
-    }
 }
