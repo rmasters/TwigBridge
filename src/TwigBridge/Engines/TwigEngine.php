@@ -90,7 +90,7 @@ class TwigEngine implements EngineInterface
      *
      * @throws \InvalidArgumentException if the template does not exist
      */
-    protected function load($name)
+    public function load($name)
     {
         if ($name instanceof \Twig_Template) {
             return $name;
