@@ -41,6 +41,12 @@ class HelperLoaderTest extends PHPUnit_Framework_TestCase
         $function = $functions[1];
         $result   = call_user_func_array($function->getCallable(), array());
         $this->assertEquals($result, 'FOOBAR');
+
+        // baz
+        $this->assertInstanceOf('Twig_SimpleFunction', $functions[2]);
+        $function = $functions[2];
+        $result = call_user_func_array($function->getCallable(), array());
+        $this->assertEquals('<b>foobar</b>', $result);
     }
 
     public function testGetFilters()
@@ -72,6 +78,10 @@ class HelperLoaderTest extends PHPUnit_Framework_TestCase
                 'fooBar' => function() {
                     return 'FOOBAR';
                 },
+                new \Twig_SimpleFunction('baz',
+                    function() { return '<b>foobar</b>'; },
+                    array('is_safe' => array('html'))
+                ),
             )
         );
 

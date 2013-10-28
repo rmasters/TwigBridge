@@ -70,6 +70,11 @@ class HelperLoader extends Extension
 
         foreach ($this->functions as $method => $twigFunction) {
 
+            if ($twigFunction instanceof Twig_SimpleFunction) {
+                $functions[] = $twigFunction;
+                continue;
+            }
+
             if (is_string($twigFunction)) {
                 $methodName = $twigFunction;
             } elseif (is_callable($twigFunction)) {
